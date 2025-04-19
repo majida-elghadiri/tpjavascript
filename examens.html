@@ -1,32 +1,64 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-<meta charset="UTF-8">
-<title>Liste des examens</title>
+  <meta charset="UTF-8">
+  <title>Liste des examens</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .exam {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
 </head>
+
 <body>
-<h1>Examens enregistrés</h1>
-<input type="text" id="proprietaire" placeholder="Nom du propriétaire">
-<button id="afficher">Afficher</button>
-<div id="resultat"></div>
-<script>
-// TODO : Ajouter un écouteur d'événement pour afficher les examens du
-propriétaire
-document.getElementById('afficher').addEventListener('click', () => {
-const prop = document.getElementById('proprietaire').value;
-const exams = JSON.parse(localStorage.getItem('examens_' + prop)) || [];
-const container = document.getElementById('resultat');
-container.innerHTML = '';
-// TODO : Afficher les examens et leurs questions
-exams.forEach((exam, i) => {
-const div = document.createElement('div');
-div.innerHTML = `<h2>${exam.nom} (${exam.duree} min)</h2>
-<p>${exam.description}</p>
-<ul>${exam.questions.map(q =>
-`<li>${q.enonce}</li>`).join('')}</ul>`;
-container.appendChild(div);
-});
-});
-</script>
+
+  <h1>Examens enregistrés</h1>
+
+  <input type="text" id="proprietaire" placeholder="Nom du propriétaire">
+  <button id="afficher">Afficher</button>
+
+  <div id="resultat"></div>
+
+  <script>
+    document.getElementById('afficher').addEventListener('click', () => {
+      const prop = document.getElementById('proprietaire').value.trim();
+      const exams = JSON.parse(localStorage.getItem('examens_' + prop)) || [];
+      const container = document.getElementById('resultat');
+
+      container.innerHTML = ''; // Reset display
+
+      if (exams.length === 0) {
+        container.innerHTML = `<p>Aucun examen trouvé pour le propriétaire : <strong>${prop}</strong></p>`;
+        return;
+      }
+
+      exams.forEach((exam) => {
+        const div = document.createElement('div');
+        div.classList.add('exam');
+        div.innerHTML = `
+          <h2>${exam.nom} (${exam.duree} min)</h2>
+          <p>${exam.description}</p>
+          <h4>Questions :</h4>
+          <ul>
+            ${exam.questions.map(q => `<li>${q.enonce}</li>`).join('')}
+          </ul>
+        `;
+        container.appendChild(div);
+      });
+    });
+  </script>
+
 </body>
+
 </html>
